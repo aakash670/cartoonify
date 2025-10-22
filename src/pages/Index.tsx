@@ -112,7 +112,7 @@ const Index = () => {
         setConvertedImage(data.image);
         toast({
           title: "✨ Conversion complete!",
-          description: "Your image has been transformed to Ghibli style",
+          description: "Your image has been transformed to Cartoonified style",
         });
       } else {
         throw new Error("No image returned");
@@ -134,28 +134,25 @@ const Index = () => {
     
     const link = document.createElement("a");
     link.href = convertedImage;
-    link.download = "ghibli-style-image.png";
+    link.download = "Cartoonify-style-image.png";
     link.click();
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen bg-[url('')] bg-cover bg-center">
       {/* Hero Section */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[var(--gradient-hero)] opacity-10"></div>
         <div className="container mx-auto px-4 py-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 backdrop-blur-sm border border-border mb-6 shadow-[var(--shadow-soft)]">
-              <Sparkles className="w-4 h-4 text-secondary" />
-              <span className="text-sm font-medium">AI-Powered Transformation</span>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
+
+            <h1 className="text-5xl md:text-6xl font-bold mb-10 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-normal">
               Transform Your Photos into
               <br />
-              Studio Ghibli Magic
+              cartoonified Magic
             </h1>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Experience the enchanting art style of Studio Ghibli. Upload any photo and watch it transform into
+              Experience the enchanting art style of cartoon . Upload any photo and watch it transform into
               beautiful hand-drawn anime artwork in seconds.
             </p>
           </div>
@@ -195,12 +192,14 @@ const Index = () => {
                     <p className="text-muted-foreground mb-4">or click to browse from your device</p>
                     <p className="text-sm text-muted-foreground">Maximum file size: 32MB</p>
                   </div>
-                  <label htmlFor="file-upload">
-                    <Button size="lg" className="cursor-pointer bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all shadow-[var(--shadow-soft)]">
-                      <ImageIcon className="w-5 h-5 mr-2" />
-                      Choose Image
-                    </Button>
-                  </label>
+                  <Button
+                    size="lg"
+                    className="cursor-pointer bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all shadow-[var(--shadow-soft)]"
+                    onClick={() => document.getElementById('file-upload')?.click()}
+                  >
+                    <ImageIcon className="w-5 h-5 mr-2" />
+                    Choose Image
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -232,7 +231,7 @@ const Index = () => {
                   <div className="mb-3">
                     <h3 className="font-semibold text-lg flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-secondary" />
-                      Ghibli Style
+                      Cartoonified Style
                     </h3>
                   </div>
                   <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
@@ -267,7 +266,7 @@ const Index = () => {
                   className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all shadow-[var(--shadow-soft)] min-w-[200px]"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
-                  {isConverting ? "Converting..." : "Convert to Ghibli"}
+                  {isConverting ? "Converting..." : "Convert to cartoonified"}
                 </Button>
 
                 {convertedImage && (
@@ -302,18 +301,26 @@ const Index = () => {
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold mb-3">See the Magic in Action</h2>
               <p className="text-muted-foreground">
-                Examples of photos transformed into beautiful Ghibli-style artwork
+                Examples of photos transformed into beautiful cartoonified-style artwork
               </p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
+              {[
+                { src: "https://media.wired.com/photos/64f9d24e1b27a741aa23c0dd/4:3/w_1384,h_1038,c_limit/Studio-Ghibli-Ranked-Culture-HERON_img_1.jpg", alt: "Cartoonify Art Example 1" },
+                { src: "https://deep-image.ai/blog/content/images/2025/04/02a0f980-13a1-11f0-96c9-0a4467d79a51-width-1216_height-832_generated--1--1.png", alt: "Cartoonify Art Example 2" },
+                { src: "https://i.pinimg.com/736x/bf/d5/9e/bfd59e323e648a99564b2a33c667841f.jpg", alt: "Cartoonify Art Example 3" }
+              ].map((example, i) => (
                 <Card key={i} className="overflow-hidden shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-glow)] transition-all duration-300 hover:scale-[1.02] bg-[var(--gradient-card)]">
                   <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                    <ImageIcon className="w-16 h-16 text-muted-foreground/30" />
+                    <img
+                      src={example.src}
+                      alt={example.alt}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="p-4">
                     <p className="text-sm text-muted-foreground text-center">
-                      Example transformation {i}
+                      {example.alt}
                     </p>
                   </div>
                 </Card>
