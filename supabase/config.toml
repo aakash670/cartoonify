@@ -1,0 +1,4 @@
+project_id = "psnkblovzkemrragdkry"
+
+[functions.convert-to-ghibli]
+verify_jwt = false

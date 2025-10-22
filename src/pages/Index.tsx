@@ -69,48 +69,59 @@ const Index = () => {
 
     setIsConverting(true);
     try {
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image-preview",
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "text",
-                  text: "Transform this image into a beautiful Studio Ghibli anime style. Keep the composition and subjects but apply the distinctive Ghibli art style with soft colors, hand-drawn aesthetic, whimsical details, and that magical atmosphere characteristic of Studio Ghibli films.",
-                },
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: selectedImage,
-                  },
-                },
-              ],
-            },
-          ],
-          modalities: ["image", "text"],
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/convert-to-ghibli`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            imageData: selectedImage,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        
+        if (response.status === 429) {
+          toast({
+            title: "Rate limit exceeded",
+            description: "Please try again in a moment",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (response.status === 402) {
+          toast({
+            title: "Credits depleted",
+            description: "Please add credits to your workspace",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        throw new Error(errorData.error || "Conversion failed");
+      }
 
       const data = await response.json();
-      const generatedImage = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-      if (generatedImage) {
-        setConvertedImage(generatedImage);
+      
+      if (data.image) {
+        setConvertedImage(data.image);
         toast({
           title: "✨ Conversion complete!",
           description: "Your image has been transformed to Ghibli style",
         });
+      } else {
+        throw new Error("No image returned");
       }
     } catch (error) {
+      console.error("Conversion error:", error);
       toast({
         title: "Conversion failed",
-        description: "Please try again",
+        description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
     } finally {
